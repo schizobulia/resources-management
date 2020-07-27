@@ -1,3 +1,4 @@
+const Tool = require('./tool');
 let tasks = [];
 
 /**
@@ -11,7 +12,7 @@ module.exports = {
     addTask: function (type, callback) {
         let task = {};
         task.status = 0;  //0: add  1: start   2：remove  3：pause  4：end
-        task.id = new Date().getTime();
+        task.id = new Tool().random();
         task.mark = type;
         task.even = callback;
         tasks.push(task);
@@ -62,7 +63,7 @@ module.exports = {
         let thread = setTimeout(() => {
             this.removeTask(id);
             clearTimeout(thread);
-        }, 5000);
+        }, 3000);
         return task.status;
     },
 

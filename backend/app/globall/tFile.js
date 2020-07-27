@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = {
+class FileTool {
 
     /**
      * delete dir
      * @param {*} dir
      */
-    rmdirAsync: async function (filePath) {
+    async rmdirAsync(filePath) {
         if (!await fs.existsSync(filePath)) {
             return;
         }
@@ -16,21 +16,27 @@ module.exports = {
             await fs.unlinkSync(filePath);
         } else {
             let dirs = await fs.readdirSync(filePath);
-            let ts = dirs.map(async (dir) => {
+            let tag = true;
+            while (tag && dirs.length) {
+                tag = false;
+                let dir = dirs.pop();
                 await this.rmdirAsync(path.join(filePath, dir));
-            })
-            await Promise.all(ts);
+                tag = true;
+            }
             await fs.rmdirSync(filePath);
         }
-    },
+    }
 
-
-    deleteDirFiles: async function (dirPath) {
+    /**
+     * delete files by dir
+     * @param {*} dirPath 
+     */
+    async deleteDirFiles(dirPath) {
         if (!await fs.existsSync(dirPath)) {
             return;
         };
         let arr = await fs.readdirSync(dirPath, { withFileTypes: true });
-        files = arr.filter((ele) => { return !ele.isDirectory() });
+        let files = arr.filter((ele) => { return !ele.isDirectory() });
         let tag = true;
         while (tag && files.length) {
             tag = false;
@@ -40,4 +46,20 @@ module.exports = {
         }
     }
 
+    /**
+     * mkdir
+     * @param {*} dirname 
+     */
+    async mkdirsSync(dirname) {
+        if (await fs.existsSync(dirname)) {
+            return true;
+        } else {
+            if (await this.mkdirsSync(path.dirname(dirname))) {
+                await fs.mkdirSync(dirname);
+                return true;
+            }
+        }
+    }
 }
+
+module.exports = FileTool;

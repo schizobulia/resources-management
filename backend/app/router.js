@@ -10,7 +10,9 @@ module.exports = app => {
 
 
   //about video api
+  router.get('/video/:filename', controller.video.video);
   router.get('/api/v1/video', app.jwt, controller.video.index);
+  router.post('/api/v1/video', app.jwt, controller.video.upload);
   router.post('/api/v1/video/conversion', app.jwt, controller.video.conversion);
   router.get('/api/v1/video/task', app.jwt, controller.video.tasks);
 };
