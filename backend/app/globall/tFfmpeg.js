@@ -52,8 +52,8 @@ class VieoConversion {
      * get source file config
      * @param {*} filePath 
      */
-    async getVideoSourceConf(filePath){
-        return JSON.parse(await fs.readFileSync(`${filePath}_config.json`));
+    async getVideoSourceConf(){
+        return JSON.parse(await fs.readFileSync(path.join(__dirname, '../../db/video_config.json')));
     }
 
     /**
@@ -61,11 +61,11 @@ class VieoConversion {
      * @param {*} filePath 
      * @param {*} data 
      */
-    async setVideoSourceConf(filePath, endFileName){
-        let data = JSON.parse(await fs.readFileSync(`${filePath}_config.json`));
+    async setVideoSourceConf(endFileName){
+        let data = await this.getVideoSourceConf();
         data.endFile = endFileName;
         data.id += 1;
-        return await fs.writeFileSync(`${filePath}_config.json`, JSON.stringify(data));
+        return await fs.writeFileSync(path.join(__dirname, '../../db/video_config.json'), JSON.stringify(data));
     }
 }
 

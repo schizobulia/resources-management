@@ -18,7 +18,7 @@ class VideoController extends Controller {
         let { limit, mark } = ctx.request.query;
         ctx.validate({ limit: 'string', mark: 'string' }, ctx.request.query);
         let basePath = `${this.config.baseDir}/source/video`;
-        let sourceFileConf = await new VideoConversion().getVideoSourceConf(`${basePath}/video`);
+        let sourceFileConf = await new VideoConversion().getVideoSourceConf();
         if (mark <= 0 || limit <= 0) {
             ctx.body = { code: 1, data: [], mark: sourceFileConf.id }
             return;
@@ -74,7 +74,7 @@ class VideoController extends Controller {
         if (info.index == info.len) {
             let index = 0;
             let videoConf = new VideoConversion();
-            let sourceFileConf = await videoConf.getVideoSourceConf(`${this.config.baseDir}/source/video/video`); //new file id
+            let sourceFileConf = await videoConf.getVideoSourceConf(); //new file id
             let sid = `${sourceFileConf.id + 1}.${fileName.split('.')[1]}`;
             //create source video
             while (info.len > -1) {
@@ -93,7 +93,7 @@ class VideoController extends Controller {
                 inputFile: `${this.config.baseDir}/source/video/${sid}`,
                 outputFile: `${m3u8OutPutPath}/${sourceFileConf.id + 1}`, arg: { mu: '1024' }
             });
-            await videoConf.setVideoSourceConf(`${this.config.baseDir}/source/video/video`, sid);
+            await videoConf.setVideoSourceConf(sid);
             await fileTool.rmdirAsync(baseDir);
             ctx.body = { code: 1, data: { index: info.index, source: `/video/${sid}`, hls: `/public/video/${sid.split('.')[0]}/1024/${sourceFileConf.id + 1}` } };
             return;
