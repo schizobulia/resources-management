@@ -24,4 +24,7 @@ function getErrRes(err, ctx) {
     if (err.code === "credentials_required") {
         ctx.body = { code: 2, error: 'No authorization token was found' };
     }
+    if (err.code === "invalid_param") {
+        ctx.body = { code: 2, error: err };
+    }
 }

@@ -12,6 +12,8 @@ run/
 *.un~
 typings/
 .nyc_output/
-app/public/video/*
 source/video/*
 !source/video/1.mp4
+app/public/video/*
+!app/public/video/index.md
+ffmpeg/

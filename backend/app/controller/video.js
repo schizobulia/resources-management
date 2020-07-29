@@ -2,7 +2,7 @@
 
 const Controller = require('egg').Controller;
 const fs = require('fs');
-const VieoConversion = require('../globall/tFfmpeg');
+const VideoConversion = require('../globall/tFfmpeg');
 const FileTool = require('../globall/tFile');
 const path = require('path');
 const task = require('../globall/task');
@@ -11,24 +11,40 @@ const pump = require('mz-modules/pump');
 class VideoController extends Controller {
 
     /**
-     * get source file directory
+     * get source video files
      */
     async index() {
         const { ctx } = this;
-        let q = ctx.request.body.q || '/';
-        let basePath = this.config.baseDir + '/source' + q;
-        const arr = await fs.readdirSync(basePath, { withFileTypes: true });
-        let list = {
-            dirs: arr.filter((ele) => { return ele.isDirectory() })
-        };
-        ctx.body = { code: 1, data: list };
+        let { limit, mark } = ctx.request.query;
+        ctx.validate({ limit: 'string', mark: 'string' }, ctx.request.query);
+        let basePath = `${this.config.baseDir}/source/video`;
+        let sourceFileConf = await new VideoConversion().getVideoSourceConf(`${basePath}/video`);
+        if (mark <= 0 || limit <= 0) {
+            ctx.body = { code: 1, data: [], mark: sourceFileConf.id }
+            return;
+        }
+        let tag = true;
+        let list = [];
+        while (tag && limit) {
+            tag = false;
+            if (await fs.existsSync(`${basePath}/${mark}.mp4`)) {
+                list.push(`${mark}.mp4`);
+                limit--;
+            }
+            tag = true;
+            mark--;
+        }
+        ctx.body = { code: 1, data: list, mark: sourceFileConf.id };
     }
 
+    /**
+     * access source file
+     */
     async video() {
         const { ctx } = this;
+        ctx.validate({ filename: 'string' }, { filename: ctx.params.filename });
         let filePath = `${this.config.baseDir}/source/video/${ctx.params.filename}`;
-        ctx.attachment(ctx.params.filename);
-        ctx.set('Content-Type', 'application/octet-stream');
+        ctx.set('Content-Type', 'video/mp4');
         ctx.body = fs.createReadStream(filePath);
     }
 
@@ -38,6 +54,7 @@ class VideoController extends Controller {
     async upload() {
         const { ctx } = this;
         const stream = await this.ctx.getFileStream();
+        ctx.validate({ index: 'string', len: 'string', name: 'string' }, stream.fields);
         let info = stream.fields;
         let fileName = info.name;
         let fileTool = new FileTool();
@@ -56,7 +73,7 @@ class VideoController extends Controller {
         //merge files
         if (info.index == info.len) {
             let index = 0;
-            let videoConf = new VieoConversion();
+            let videoConf = new VideoConversion();
             let sourceFileConf = await videoConf.getVideoSourceConf(`${this.config.baseDir}/source/video/video`); //new file id
             let sid = `${sourceFileConf.id + 1}.${fileName.split('.')[1]}`;
             //create source video
@@ -71,7 +88,7 @@ class VideoController extends Controller {
             //create hls and update config
             let m3u8OutPutPath = `${this.config.baseDir}/app/public/video/${sid.split('.')[0]}/1024/`;
             await new FileTool().mkdirsSync(m3u8OutPutPath);
-            let taskId = task.addTask(sid, new VieoConversion().hls);
+            let taskId = task.addTask(sid, new VideoConversion().hls);
             task.startTask(taskId, {
                 inputFile: `${this.config.baseDir}/source/video/${sid}`,
                 outputFile: `${m3u8OutPutPath}/${sourceFileConf.id + 1}`, arg: { mu: '1024' }
@@ -118,7 +135,7 @@ class VideoController extends Controller {
         }
         let fileName = `${hlsDirName}_${mu}`;
         let hlsFilePath = `${outPutFilePath}${fileName}`;
-        let taskId = task.addTask(fileName, new VieoConversion().hls);
+        let taskId = task.addTask(fileName, new VideoConversion().hls);
         task.startTask(taskId, { inputFile: `${this.config.baseDir}/source/video/${sid}`, outputFile: hlsFilePath, arg: { mu: mu } });
         if (taskId) {
             ctx.body = { code: 1, path: `/public/video/${hlsDirName}/${mu}/${fileName}` };

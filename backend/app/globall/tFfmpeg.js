@@ -1,8 +1,13 @@
 const FfmpegCommand = require('fluent-ffmpeg');
 const task = require('./task');
 const fs = require('fs');
+const path = require('path');
 
 class VieoConversion {
+
+    constructor(){
+        FfmpegCommand.setFfmpegPath(path.join(__dirname, '../../ffmpeg/bin/ffmpeg.exe'));
+    }
     /**
      * 
      * @param {*} inputFile input file path 
