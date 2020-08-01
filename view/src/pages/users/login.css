@@ -5,4 +5,8 @@
     width: 350px;
     margin: 0 auto;
     margin-top: 10em;
-  }
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    height: 250px;
+    padding: 25px 20px 20px 20px;
+}
