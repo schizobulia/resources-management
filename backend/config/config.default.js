@@ -25,15 +25,21 @@ module.exports = appInfo => {
   config.security = {
     csrf: {
       enable: false,
-      ignoreJSON: true
+      ignoreJSON: false
     },
     domainWhiteList: ['*']
   };
 
   config.cors = {
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
+    credentials: true,
     origin: '*',
-    allowMethods: 'GET'
   };
+
+  config.multipart = {
+    mode: 'stream',
+    fileExtensions: ['']
+  }
 
   // add your user config here
   const userConfig = {
