@@ -2,7 +2,7 @@
 
 const Controller = require('egg').Controller;
 const fs = require('fs');
-const VideoConversion = require('../globall/tFfmpeg');
+const VideoConversion = require('../globall/tVideo');
 const FileTool = require('../globall/tFile');
 const path = require('path');
 const task = require('../globall/task');
@@ -25,7 +25,7 @@ class VideoController extends Controller {
         }
         let tag = true;
         let list = [];
-        while (tag && limit) {
+        while (tag && mark) {
             tag = false;
             if (await fs.existsSync(`${basePath}/${mark}.mp4`)) {
                 list.push(`${mark}.mp4`);

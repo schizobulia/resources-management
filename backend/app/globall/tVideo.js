@@ -3,39 +3,36 @@ const task = require('./task');
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * video Conversion class
+ */
 class VieoConversion {
 
     constructor(){
-        FfmpegCommand.setFfmpegPath(path.join(__dirname, '../../ffmpeg/bin/ffmpeg.exe'));
+        // FfmpegCommand.setFfmpegPath(path.join(__dirname, '../../ffmpeg/bin/ffmpeg.exe'));
     }
     /**
      * 
      * @param {*} inputFile input file path 
      * @param {*} outputFile output file path
-     * @param {*} arg   argument
      */
     hls(argument) {
         let that = this;
         FfmpegCommand(argument.inputFile)
             .output(argument.outputFile + '_n1.m3u8')
             .videoCodec('libx264')
-            .size('1820x1080')
 
             .output(argument.outputFile + '_n2.m3u8')
             .videoCodec('libx264')
-            .size('1280x1024')
+            .videoBitrate(`1024k`, true)
 
             .output(argument.outputFile + '_n3.m3u8')
             .videoCodec('libx264')
-            .size('800x600')
+            .videoBitrate(`512k`, true)
 
-            // .videoBitrate(`${argument.arg.mu}k`, true)
-            // .audioChannels(2)
-            // // set hls segments time
+            .audioChannels(2)
             .addOption('-hls_time', 10)
-            // include all the segments in the list
             .addOption('-hls_list_size', 0)
-            // setup event handlers
             .on('start', () => {
             })
             .on('end', () => {
