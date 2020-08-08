@@ -22,6 +22,12 @@ module.exports = appInfo => {
     secret: "123456admin"
   };
 
+  config.view = {
+    mapping: {
+      '.ejs': 'ejs',
+    },
+  };
+
   config.security = {
     csrf: {
       enable: false,

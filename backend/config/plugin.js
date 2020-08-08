@@ -16,4 +16,9 @@ module.exports = {
     enable: true,
     package: "egg-jwt"
   },
+
+  ejs: {
+    enable: true,
+    package: 'egg-view-ejs',
+  }
 };

@@ -5,7 +5,7 @@ export default {
      * get api url
      */
     getUrl() {
-        return 'http://47.100.178.137:8888';
+        return 'http://127.0.0.1:7001';
     },
 
     /**
@@ -14,9 +14,9 @@ export default {
      */
     getStaticVideoHlsUrl(sid) {
         let baseUrl = this.getUrl();
-        return [`${baseUrl}/public/video/${sid}/1024/${sid}_1024_n1.m3u8`,
-        `${baseUrl}/public/video/${sid}/1024/${sid}_1024_n2.m3u8`,
-        `${baseUrl}/public/video/${sid}/1024/${sid}_1024_n3.m3u8`,];
+        return [`${baseUrl}/public/video/${sid}/1024/${sid}_n1.m3u8`,
+        `${baseUrl}/public/video/${sid}/1024/${sid}_n2.m3u8`,
+        `${baseUrl}/public/video/${sid}/1024/${sid}_n3.m3u8`,];
     },
 
     loadSourceVideo(url, callback) {

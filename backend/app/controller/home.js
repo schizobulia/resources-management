@@ -4,15 +4,14 @@ const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
   async index() {
-    const { ctx } = this;
-    ctx.body = 'hi, egg';
+    await this.ctx.render('index.ejs', {});
   }
 
   async login() {
     const { ctx, app } = this;
     const info = ctx.request.body;
     ctx.validate({ username: 'string', password: 'string' }, info);
-    if (info.username === '123456' && info.password === 'admin') {
+    if (info.username === 'admin' && info.password === '123456') {
       const token = app.jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60 * 128),
       }, app.config.jwt.secret);

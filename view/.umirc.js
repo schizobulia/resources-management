@@ -1,6 +1,8 @@
 // ref: https://umijs.org/config/
 export default {
   treeShaking: true,
+  history: 'hash',
+  publicPath: '/public/',
   routes: [
     {
       path: '/',
@@ -13,10 +15,6 @@ export default {
         {
           path: '/video',
           component: '../pages/video',
-        },
-        {
-          path: '/image',
-          component: '../pages/image',
         },
         {
           path: '/users/login',

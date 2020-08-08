@@ -19,20 +19,22 @@ class VideoController extends Controller {
         ctx.validate({ limit: 'string', mark: 'string' }, ctx.request.query);
         let basePath = `${this.config.baseDir}/source/video`;
         let sourceFileConf = await new VideoConversion().getVideoSourceConf();
-        if (mark <= 0 || limit <= 0) {
-            ctx.body = { code: 1, data: [], mark: sourceFileConf.id }
-            return;
-        }
+
         let tag = true;
         let list = [];
-        while (tag && mark) {
+        if (mark == 1) {
+            mark = sourceFileConf.id;
+        } else {
+            mark = Math.abs(sourceFileConf.id - (parseInt(mark - 1) * parseInt(limit)));
+        }
+        while (tag && limit && parseInt(mark)) {
             tag = false;
             if (await fs.existsSync(`${basePath}/${mark}.mp4`)) {
                 list.push(`${mark}.mp4`);
                 limit--;
             }
-            tag = true;
             mark--;
+            tag = true;
         }
         ctx.body = { code: 1, data: list, mark: sourceFileConf.id };
     }
