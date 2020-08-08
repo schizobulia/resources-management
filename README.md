@@ -16,4 +16,4 @@ $ npm run dev
 ### 说明
 
 - 必须安装[FFmpeg](http://ffmpeg.org/),所以的视频处理都是基于[FFmpeg](http://ffmpeg.org/)
-- 有任何问题可以及时联系我，我将尽快回复您。Email: 2833324528@qq.comqq.com
+- 有任何问题可以及时联系我，我将尽快回复您。Email: 2833324528@qq.com
